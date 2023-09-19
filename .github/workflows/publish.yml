@@ -1,0 +1,39 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - master  # Set a branch to deploy
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.117.0'
+          # extended: true
+
+      - name: Build
+        run: hugo
+
+      - name: Deploying Hugo Website in Personal Server
+        uses: appleboy/scp-action@v0.1.3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          HOST: ${{ secrets.PUBLISH_HOST }}
+          USERNAME: ${{ secrets.PUBLISH_USERNAME }}
+          PORT: ${{ secrets.PUBLISH_PORT }}
+          PASSWORD: ${{ secrets.PUBLISH_PASSWORD }}
+          source: "./public/*"
+          target: ${{ secrets.PUBLISH_PATH }}
+          strip_components: 1 
