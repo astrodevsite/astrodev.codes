@@ -23,6 +23,8 @@ jobs:
           hugo-version: '0.118.2'
           extended: true
 
+      - run: npm install
+
       - name: Build
         run: hugo
 
