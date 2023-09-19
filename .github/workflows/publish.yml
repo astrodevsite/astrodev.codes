@@ -30,7 +30,7 @@ jobs:
 
       - name: Deploying Hugo Website in Personal Server
         uses: appleboy/scp-action@v0.1.3
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           HOST: ${{ secrets.PUBLISH_HOST }}
           USERNAME: ${{ secrets.PUBLISH_USERNAME }}
